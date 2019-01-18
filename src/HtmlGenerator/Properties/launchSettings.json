@@ -2,7 +2,7 @@
   "profiles": {
     "HtmlGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "$(SolutionDir)TestCode\\TestSolution.sln /out:$(SolutionDir)src\\SourceIndexServer\\index"
+      "commandLineArgs": "\"C:\\Projects\\Branches\\7.13.2.918\\TSBpm\\Src\\Lib\\TSLib.sln\" /out:\"C:\\Projects\\Branches\\7.13.2.918\\index\""
     }
   }
 }

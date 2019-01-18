@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -12,10 +12,20 @@ using Microsoft.SourceBrowser.Common;
 
 namespace Microsoft.SourceBrowser.HtmlGenerator
 {
-    public class Program
+	using System.Linq;
+
+	public class Program
     {
-        private static void Main(string[] args)
-        {
+        private static void Main(string[] args) {
+			var assemblies = new List<Assembly> {
+				typeof(Newtonsoft.Json.ConstructorHandling).Assembly,
+				typeof(System.Collections.Immutable.ImmutableArray).Assembly
+			};
+			AppDomain.CurrentDomain.AssemblyResolve += (sender, eventArgs) => {
+				var name = new AssemblyName(eventArgs.Name);
+				return assemblies.FirstOrDefault(dll =>
+					string.Equals(dll.GetName().Name, name.Name, StringComparison.OrdinalIgnoreCase));
+			};
             if (args.Length == 0)
             {
                 PrintUsage();
