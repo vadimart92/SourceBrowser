@@ -199,3 +199,5 @@ FakesAssemblies/
 
 # Cake files
 tools/
+# Build results
+HtmlGenerator/
