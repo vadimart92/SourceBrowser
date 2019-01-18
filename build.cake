@@ -10,14 +10,19 @@ Task("BuidGenerator").Does(() => {
     });
 });
 
+Task("EnsureGeneratorExists").Does(()=>{
+    if (!new FileInfo(GetGeneratorPath().FullPath).Exists){
+        RunTarget("BuidGenerator");
+    }
+});
+
 Task("BuildIndex")
-.IsDependentOn("BuidGenerator")
+.IsDependentOn("EnsureGeneratorExists")
 .Does(() => {
   if (string.IsNullOrWhiteSpace(slnPath)){
       throw new Exception("[slnPath] parameter empty");
   }
-  var generatorPath = new FilePath("./HtmlGenerator/HtmlGenerator.exe");
-  StartProcess(generatorPath, new ProcessSettings {
+  StartProcess(GetGeneratorPath(), new ProcessSettings {
         Arguments = new ProcessArgumentBuilder()
             .Append(new FilePath(slnPath).FullPath)
             .Append("/force")
@@ -26,3 +31,7 @@ Task("BuildIndex")
 });
 
 RunTarget(target);
+
+private FilePath GetGeneratorPath(){
+    return new FilePath("./HtmlGenerator/HtmlGenerator.exe");
+}
