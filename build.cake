@@ -5,7 +5,6 @@ var configuration = Argument("configuration", "Release");
 Task("BuidGenerator").Does(() => {
     MSBuild("./SourceBrowser.sln", (settings)=>{
         settings
-        .SetMaxCpuCount(0)
         .WithRestore()
         .SetConfiguration(configuration);
     });
