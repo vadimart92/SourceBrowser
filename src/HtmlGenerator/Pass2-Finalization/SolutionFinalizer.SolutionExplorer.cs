@@ -6,7 +6,9 @@ using Folder = Microsoft.SourceBrowser.HtmlGenerator.Folder<Microsoft.CodeAnalys
 
 namespace Microsoft.SourceBrowser.HtmlGenerator
 {
-    public partial class SolutionFinalizer
+	using Microsoft.SourceBrowser.HtmlGenerator.Utilities;
+
+	public partial class SolutionFinalizer
     {
         private void WriteSolutionExplorer(Folder root = null)
         {
@@ -59,7 +61,7 @@ namespace Microsoft.SourceBrowser.HtmlGenerator
             {
                 foreach (var project in folder.Items)
                 {
-                    WriteProject(project.AssemblyName, writer);
+                    WriteProject(project.GetAssemblyName(), writer);
                 }
             }
         }

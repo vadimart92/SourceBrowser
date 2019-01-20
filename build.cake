@@ -1,12 +1,11 @@
 var target = Argument("target", "BuildIndex");
 var slnPath = Argument<string>("slnPath", "");
 var destination = Argument("destination", "Index");
-var configuration = Argument("configuration", "Release");
 Task("BuidGenerator").Does(() => {
     MSBuild("./SourceBrowser.sln", (settings)=>{
         settings
         .WithRestore()
-        .SetConfiguration(configuration);
+        .SetConfiguration("Release");
     });
 });
 
@@ -16,13 +15,20 @@ Task("EnsureGeneratorExists").Does(()=>{
     }
 });
 
+Task("BuildSolution").Does(()=>{
+    var path = GetSlnPath();
+    MSBuild(path, (settings)=>{
+        settings
+        .WithRestore()
+        .SetConfiguration("Debug");
+    });
+});
+
 Task("BuildIndex")
 .IsDependentOn("EnsureGeneratorExists")
+.IsDependentOn("BuildSolution")
 .Does(() => {
-  if (string.IsNullOrWhiteSpace(slnPath)){
-      throw new Exception("[slnPath] parameter empty");
-  }
-  var path = new FilePath(slnPath).MakeAbsolute(Context.Environment).FullPath;
+  var path = GetSlnPath();
   Information($"Solution file path: {path}");
   StartProcess(GetGeneratorPath(), new ProcessSettings {
         Arguments = new ProcessArgumentBuilder()
@@ -36,4 +42,11 @@ RunTarget(target);
 
 private FilePath GetGeneratorPath(){
     return new FilePath("./HtmlGenerator/HtmlGenerator.exe");
+}
+
+private string GetSlnPath(){
+    if (string.IsNullOrWhiteSpace(slnPath)){
+         throw new Exception("[slnPath] parameter empty");
+    }
+    return new FilePath(slnPath).MakeAbsolute(Context.Environment).FullPath;
 }

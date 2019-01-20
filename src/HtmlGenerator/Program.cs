@@ -23,8 +23,9 @@ namespace Microsoft.SourceBrowser.HtmlGenerator
 			};
 			AppDomain.CurrentDomain.AssemblyResolve += (sender, eventArgs) => {
 				var name = new AssemblyName(eventArgs.Name);
-				return assemblies.FirstOrDefault(dll =>
+				var var = assemblies.FirstOrDefault(dll =>
 					string.Equals(dll.GetName().Name, name.Name, StringComparison.OrdinalIgnoreCase));
+				return var;
 			};
             if (args.Length == 0)
             {

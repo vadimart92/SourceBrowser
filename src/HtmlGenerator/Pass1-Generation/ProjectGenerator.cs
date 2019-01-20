@@ -10,7 +10,9 @@ using Microsoft.SourceBrowser.Common;
 
 namespace Microsoft.SourceBrowser.HtmlGenerator
 {
-    public partial class ProjectGenerator
+	using Microsoft.SourceBrowser.HtmlGenerator.Utilities;
+
+	public partial class ProjectGenerator
     {
         private readonly string assemblyAttributesFileName;
 
@@ -225,7 +227,7 @@ namespace Microsoft.SourceBrowser.HtmlGenerator
 
         private string GetProjectDestinationPath(Project project, string solutionDestinationPath)
         {
-            var assemblyName = project.AssemblyName;
+            var assemblyName = project.GetAssemblyName();
             if (assemblyName == "<Error>")
             {
                 return null;
