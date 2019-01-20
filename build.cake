@@ -19,6 +19,9 @@ Task("BuildSolution").Does(()=>{
     var path = GetSlnPath();
     MSBuild(path, (settings)=>{
         settings
+        .EnableBinaryLogger("BuildSolution.binlog")
+        .SetNoConsoleLogger(true)
+        .WithProperty("StyleCopEnabled", "false")
         .WithRestore()
         .SetConfiguration("Debug");
     });
