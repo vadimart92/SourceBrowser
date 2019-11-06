@@ -13,6 +13,10 @@
     <NuSpecFile>$(MSBuildProjectDirectory)\$(NuGetPackageId).nuspec</NuSpecFile>
     <NuGetVersion>1.0.24</NuGetVersion>
   </PropertyGroup>
+   <PropertyGroup>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	   <OutputPath>..\..\HtmlGenerator</OutputPath>
+   </PropertyGroup>
   <ItemGroup>
     <Reference Include="..\..\lib\Microsoft.CodeAnalysis.Workspaces.Desktop.dll" />
   </ItemGroup>
@@ -74,6 +78,7 @@
   <PropertyGroup>
     <NupkgFilePath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)$(OutDir)$(NuGetPackageId).$(NuGetVersion).nupkg'))</NupkgFilePath>
   </PropertyGroup>
+
   <Target Name="BuildNuGet" AfterTargets="CoreBuild" Condition="Exists('$(NuSpecFile)')" DependsOnTargets="CopyFilesToOutputDirectory" Inputs="@(NuGetInput)" Outputs="$(NupkgFilePath)">
     <PropertyGroup>
       <NuGetOutputRoot>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)$(OutDir.TrimEnd('\'))'))</NuGetOutputRoot>

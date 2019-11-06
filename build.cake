@@ -2,10 +2,9 @@ var target = Argument("target", "BuildIndex");
 var slnPath = Argument<string>("slnPath", "");
 var destination = Argument("destination", "Index");
 Task("BuidGenerator").Does(() => {
-    MSBuild("./SourceBrowser.sln", (settings)=>{
-        settings
-        .SetConfiguration("Release");
-    });
+    DotNetCoreBuild("./SourceBrowser.sln", new DotNetCoreBuildSettings {
+		Configuration = "Release"
+	});
 });
 
 Task("EnsureGeneratorExists").Does(()=>{
@@ -16,18 +15,20 @@ Task("EnsureGeneratorExists").Does(()=>{
 
 Task("BuildSolution").Does(()=>{
     var path = GetSlnPath();
-    MSBuild(path, (settings)=>{
-        settings
-        .EnableBinaryLogger("BuildSolution.binlog")
+	MSBuild(path, settings => {
+		settings
+		.EnableBinaryLogger("BuildSolution.binlog")
         .SetNoConsoleLogger(true)
         .WithProperty("StyleCopEnabled", "false")
-        .SetConfiguration("Debug");
-    });
+        .SetConfiguration("Debug")
+		.SetMaxCpuCount(0)
+		.WithProperty("BuildProjectReferences", "true");
+	});
+	
 });
 
-Task("BuildIndex")
+Task("BuildIndexInternal")
 .IsDependentOn("EnsureGeneratorExists")
-.IsDependentOn("BuildSolution")
 .Does(() => {
   var path = GetSlnPath();
   Information($"Solution file path: {path}");
@@ -38,6 +39,11 @@ Task("BuildIndex")
             .Append("/out:{0}", destination)
         });
 });
+
+Task("BuildIndex")
+.IsDependentOn("BuildSolution")
+.IsDependentOn("BuildIndexInternal");
+
 
 RunTarget(target);
 
