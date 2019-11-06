@@ -220,6 +220,7 @@ namespace Microsoft.SourceBrowser.HtmlGenerator
                 FinalizeProjects(emitAssemblyList, federation);
                 WebsiteFinalizer.Finalize(websiteDestination, emitAssemblyList, federation);
             }
+            Log.Close();
         }
 
         private static void AddProject(List<string> projects, string path)
@@ -261,7 +262,7 @@ namespace Microsoft.SourceBrowser.HtmlGenerator
                 + "[/assemblylist]");
         }
 
-        private static readonly Folder<Project> mergedSolutionExplorerRoot = new Folder<Project>();
+        private static readonly Folder<ProjectSkeleton> mergedSolutionExplorerRoot = new Folder<ProjectSkeleton>();
 
         private static void IndexSolutions(
             IEnumerable<string> solutionFilePaths,

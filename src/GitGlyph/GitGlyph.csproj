@@ -5,6 +5,7 @@
     <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System.ComponentModel.Composition" />
     <PackageReference Include="LibGit2Sharp" Version="0.25.4" />
   </ItemGroup>
   <ItemGroup>

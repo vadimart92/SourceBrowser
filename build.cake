@@ -4,7 +4,6 @@ var destination = Argument("destination", "Index");
 Task("BuidGenerator").Does(() => {
     MSBuild("./SourceBrowser.sln", (settings)=>{
         settings
-        .WithRestore()
         .SetConfiguration("Release");
     });
 });
@@ -22,7 +21,6 @@ Task("BuildSolution").Does(()=>{
         .EnableBinaryLogger("BuildSolution.binlog")
         .SetNoConsoleLogger(true)
         .WithProperty("StyleCopEnabled", "false")
-        .WithRestore()
         .SetConfiguration("Debug");
     });
 });

@@ -26,12 +26,20 @@ namespace Microsoft.SourceBrowser.HtmlGenerator
                 return null;
             }
 
-            var ranges = classifiedSpans.Select(classifiedSpan =>
-                new Range
-                {
-                    ClassifiedSpan = classifiedSpan,
-                    Text = text.GetSubText(classifiedSpan.TextSpan).ToString()
-                });
+            // Roslyn 3.0.0 introduced `Symbol - Static` as an "additive" classification, meaning that multiple
+            // classified spans will be emitted for the same TextSpan. This will filter our those classified spans
+            // since they are "extra" information and do not represent the identifier type. This filter can be
+            // removed after taking Roslyn 3.1.0 as the classifier will filter before returning classified spans.
+            var ranges = classifiedSpans.Where(classifiedSpan => 
+                classifiedSpan.ClassificationType != ClassificationTypeNames.StaticSymbol &&
+                classifiedSpan.ClassificationType != ClassificationTypeNames.StringEscapeCharacter &&
+                !classifiedSpan.ClassificationType.StartsWith("regex"))
+                .Select(classifiedSpan =>
+                    new Range
+                    {
+                        ClassifiedSpan = classifiedSpan,
+                        Text = text.GetSubText(classifiedSpan.TextSpan).ToString()
+                    });
             ranges = Merge(text, ranges);
             ranges = FilterByClassification(ranges);
             ranges = FillGaps(text, ranges);
@@ -143,6 +151,7 @@ namespace Microsoft.SourceBrowser.HtmlGenerator
         private static readonly HashSet<string> ignoreClassifications = new HashSet<string>(new[]
             {
                 "operator",
+                "operator - overloaded",
                 "number",
                 "punctuation",
                 "preprocessor text",
@@ -152,6 +161,7 @@ namespace Microsoft.SourceBrowser.HtmlGenerator
         private static readonly Dictionary<string, string> replaceClassifications = new Dictionary<string, string>
             {
                 ["keyword"] = Constants.ClassificationKeyword,
+                ["keyword - control"] = Constants.ClassificationKeyword,
                 ["identifier"] = Constants.ClassificationIdentifier,
                 ["field name"] = Constants.ClassificationIdentifier,
                 ["enum member name"] = Constants.ClassificationIdentifier,
@@ -162,6 +172,8 @@ namespace Microsoft.SourceBrowser.HtmlGenerator
                 ["extension method name"] = Constants.ClassificationIdentifier,
                 ["property name"] = Constants.ClassificationIdentifier,
                 ["event name"] = Constants.ClassificationIdentifier,
+                ["namespace name"] = Constants.ClassificationIdentifier,
+                ["label name"] = Constants.ClassificationIdentifier,
                 ["class name"] = Constants.ClassificationTypeName,
                 ["struct name"] = Constants.ClassificationTypeName,
                 ["interface name"] = Constants.ClassificationTypeName,
