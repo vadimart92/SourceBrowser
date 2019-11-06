@@ -11,8 +11,8 @@ namespace Microsoft.SourceBrowser.HtmlGenerator
         public static IEnumerable<string> DefaultFederatedIndexUrls = new[]
         {
             "https://referencesource.microsoft.com",
-            "http://source.roslyn.io"
-        };
+			"https://source.dot.net/"
+		};
 
         private class Info
         {
