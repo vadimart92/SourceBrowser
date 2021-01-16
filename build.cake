@@ -1,7 +1,8 @@
+#addin nuget:?package=Cake.FileHelpers&version=3.3.0
+
 var target = Argument("target", "BuildIndex");
 var slnPath = Argument<string>("slnPath", "");
 var destination = Argument("destination", "Index");
-var toolPath = Argument<string>("toolPath", null);
 Task("BuidGenerator").Does(() => {
     DotNetCoreBuild("./SourceBrowser.sln", new DotNetCoreBuildSettings {
 		Configuration = "Release"
@@ -14,8 +15,16 @@ Task("EnsureGeneratorExists").Does(()=>{
     }
 });
 
+Task("SetSdkSettings").Does(() => {
+    var settings = @"{""sdk"":{""version"": ""3.1.0"",""rollForward"": ""latestPatch""}}";
+    var path = GetSlnPath();
+    var settingsPath = File(path).Path.GetDirectory().CombineWithFilePath(File("global.json"));
+    Information($"settingsPath: {settingsPath}");
+    FileWriteText(settingsPath, settings);
+});
 Task("BuildSolution").Does(()=>{
     var path = GetSlnPath();
+    DotNetCoreRestore(path);
     var settings = new DotNetCoreMSBuildSettings();
 		settings.EnableBinaryLogger("BuildSolution.binlog");
         settings.DisableConsoleLogger = true;
