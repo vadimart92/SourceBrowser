@@ -1,6 +1,7 @@
 var target = Argument("target", "BuildIndex");
 var slnPath = Argument<string>("slnPath", "");
 var destination = Argument("destination", "Index");
+var toolPath = Argument<string>("toolPath", null);
 Task("BuidGenerator").Does(() => {
     DotNetCoreBuild("./SourceBrowser.sln", new DotNetCoreBuildSettings {
 		Configuration = "Release"
@@ -15,17 +16,14 @@ Task("EnsureGeneratorExists").Does(()=>{
 
 Task("BuildSolution").Does(()=>{
     var path = GetSlnPath();
-	MSBuild(path, settings => {
-		settings
-		.WithRestore()
-		.EnableBinaryLogger("BuildSolution.binlog")
-        .SetNoConsoleLogger(true)
-        .WithProperty("StyleCopEnabled", "false")
+    var settings = new DotNetCoreMSBuildSettings();
+		settings.EnableBinaryLogger("BuildSolution.binlog");
+        settings.DisableConsoleLogger = true;
+        settings.WithProperty("StyleCopEnabled", "false")
         .SetConfiguration("Debug")
 		.SetMaxCpuCount(0)
 		.WithProperty("BuildProjectReferences", "true");
-	});
-	
+    DotNetCoreMSBuild(path, settings);
 });
 
 Task("BuildIndexInternal")
