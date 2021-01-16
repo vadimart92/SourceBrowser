@@ -22,7 +22,10 @@ Task("SetSdkSettings").Does(() => {
     Information($"settingsPath: {settingsPath}");
     FileWriteText(settingsPath, settings);
 });
-Task("BuildSolution").Does(()=>{
+
+Task("BuildSolution")
+.IsDependentOn("SetSdkSettings")
+.Does(()=>{
     var path = GetSlnPath();
     DotNetCoreRestore(path);
     var settings = new DotNetCoreMSBuildSettings();
