@@ -16,7 +16,7 @@ Task("EnsureGeneratorExists").Does(()=>{
 });
 
 Task("SetSdkSettings").Does(() => {
-    var settings = @"{""sdk"":{""version"": ""3.1.0"",""rollForward"": ""latestPatch""}}";
+    var settings = @"{""sdk"":{""version"": ""3.1.201"",""rollForward"": ""latestFeature""}}";
     var path = GetSlnPath();
     var settingsPath = File(path).Path.GetDirectory().CombineWithFilePath(File("global.json"));
     Information($"settingsPath: {settingsPath}");
