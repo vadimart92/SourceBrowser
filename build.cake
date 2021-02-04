@@ -43,14 +43,23 @@ Task("BuildIndexInternal")
 .Does(() => {
   var path = GetSlnPath();
   Information($"Solution file path: {path}");
+  var ver = System.IO.Directory.EnumerateDirectories(@"C:\Program Files\dotnet\sdk")
+    .Select(p => Version.TryParse(new DirectoryInfo(p).Name, out var ver) ? ver : null)
+    .Where(v => v?.Major == 3)
+    .OrderByDescending(v => v)
+    .LastOrDefault();
+	var environmentVariables = new Dictionary<string, string>();
+	if (ver != null) {
+		var mSBuildSDKsPath = $@"C:\Program Files\dotnet\sdk\{ver.Major}.{ver.Minor}.{ver.Build}\Sdks";
+		environmentVariables["MSBuildSDKsPath"] = mSBuildSDKsPath;
+		Information($"MSBuildSDKsPath: {mSBuildSDKsPath}");
+	}
   StartProcess(GetGeneratorPath(), new ProcessSettings {
 		Arguments = new ProcessArgumentBuilder()
 			.Append(path)
 			.Append("/force")
 			.Append("/out:{0}", destination),
-		EnvironmentVariables = new Dictionary<string, string> {
-			{ "MSBuildSDKsPath", @"C:\Program Files\dotnet\sdk\3.1.201\Sdks" }
-		}
+		EnvironmentVariables = environmentVariables
 	});
 });
 
