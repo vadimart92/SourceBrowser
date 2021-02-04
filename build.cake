@@ -47,12 +47,11 @@ Task("BuildIndexInternal")
 		Arguments = new ProcessArgumentBuilder()
 			.Append(path)
 			.Append("/force")
-			.Append("/out:{0}", destination)
-		},
+			.Append("/out:{0}", destination),
 		EnvironmentVariables = new Dictionary<string, string> {
 			{ "MSBuildSDKsPath", @"C:\Program Files\dotnet\sdk\3.1.201\Sdks" }
 		}
-	);
+	});
 });
 
 Task("BuildIndex")
