@@ -3,7 +3,7 @@
 var target = Argument("target", "BuildIndex");
 var slnPath = Argument<string>("slnPath", "");
 var destination = Argument("destination", "Index");
-Task("BuidGenerator").Does(() => {
+Task("BuildGenerator").Does(() => {
 	DotNetCoreBuild("./SourceBrowser.sln", new DotNetCoreBuildSettings {
 		Configuration = "Release"
 	});
@@ -11,7 +11,7 @@ Task("BuidGenerator").Does(() => {
 
 Task("EnsureGeneratorExists").Does(()=>{
 	if (!new FileInfo(GetGeneratorPath().FullPath).Exists){
-		RunTarget("BuidGenerator");
+		RunTarget("BuildGenerator");
 	}
 });
 
